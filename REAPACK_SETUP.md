@@ -49,3 +49,11 @@ GlobalRecMuteSoloBox/
 For long-term version history, use `reapack-index` to regenerate `index.xml`
 from Git commits. The bootstrap `index.xml` supplied here uses `main` URLs so
 that the first repository can be tested immediately.
+
+
+## Important correction
+
+The `index.xml` in this archive uses ReaPack's normal XML syntax:
+`<link rel="website">URL</link>`.
+
+Replace any previous `index.xml` in the repository root with this corrected file.
