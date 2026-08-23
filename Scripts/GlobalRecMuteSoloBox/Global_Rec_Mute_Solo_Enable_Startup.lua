@@ -1,7 +1,7 @@
 --[[
 @description Global Rec Mute Solo - Enable at REAPER startup
 @author doomfred, OpenAI
-@version 1.1.2
+@version 1.1.3
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
 @noindex
 ]]
@@ -91,9 +91,9 @@ end
 
 if not main_script then
     reaper.MB(
-        "Impossible de trouver Global_Rec_Mute_Solo.lua.\n\n" ..
-        "Dossier de l'action Enable détecté :\n" .. install_dir .. "\n\n" ..
-        "Synchronise le package ReaPack puis réessaie.",
+        "Unable to find Global_Rec_Mute_Solo.lua.\n\n" ..
+        "Detected Enable action folder:\n" .. install_dir .. "\n\n" ..
+        "Synchronize the ReaPack package, then try again.",
         NAME, 0
     )
     return
@@ -128,15 +128,15 @@ end
 local ok, err = write_file(path, existing .. block)
 if not ok then
     reaper.MB(
-        "Impossible de modifier :\n" .. path .. "\n\n" .. tostring(err),
+        "Unable to modify:\n" .. path .. "\n\n" .. tostring(err),
         NAME, 0
     )
     return
 end
 
 reaper.MB(
-    "Démarrage automatique activé.\n\n" ..
-    "Script principal détecté :\n" .. main_script .. "\n\n" ..
-    "Global Rec Mute Solo sera lancé au prochain démarrage de REAPER.",
+    "Automatic startup enabled.\n\n" ..
+    "Detected main script:\n" .. main_script .. "\n\n" ..
+    "Global Rec Mute Solo will launch the next time REAPER starts.",
     NAME, 0
 )

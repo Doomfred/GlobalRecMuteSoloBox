@@ -1,7 +1,7 @@
 --[[
 @description Global Rec Mute Solo - Disable at REAPER startup
 @author doomfred, OpenAI
-@version 1.1.2
+@version 1.1.3
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
 @noindex
 ]]
@@ -48,7 +48,7 @@ local existing = read_file(path)
 
 if existing == nil then
     reaper.MB(
-        "Aucun fichier __startup.lua trouvé.\n\nLe démarrage automatique est déjà désactivé.",
+        "No __startup.lua file was found.\n\nAutomatic startup is already disabled.",
         NAME,
         0
     )
@@ -59,7 +59,7 @@ local cleaned, changed = remove_block(existing)
 
 if not changed then
     reaper.MB(
-        "Global Rec Mute Solo n'était pas configuré pour démarrer automatiquement.",
+        "Global Rec Mute Solo was not configured to start automatically.",
         NAME,
         0
     )
@@ -70,7 +70,7 @@ local ok, err = write_file(path, cleaned)
 
 if not ok then
     reaper.MB(
-        "Impossible de modifier :\n" .. path .. "\n\n" .. tostring(err),
+        "Unable to modify:\n" .. path .. "\n\n" .. tostring(err),
         NAME,
         0
     )
@@ -78,8 +78,8 @@ if not ok then
 end
 
 reaper.MB(
-    "Démarrage automatique désactivé.\n\n" ..
-    "Les autres commandes éventuellement présentes dans __startup.lua ont été conservées.",
+    "Automatic startup disabled.\n\n" ..
+    "Any other commands in __startup.lua have been preserved.",
     NAME,
     0
 )

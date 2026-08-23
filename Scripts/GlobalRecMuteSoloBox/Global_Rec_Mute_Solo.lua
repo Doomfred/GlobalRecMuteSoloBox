@@ -2,9 +2,9 @@
 @description Global Rec Mute Solo
 @author doomfred, OpenAI
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
-@version 1.1.2
+@version 1.1.3
 @changelog
-  Fix startup path discovery for repositories installed with an extra Scripts subfolder.
+  English UI text and delayed hover tooltips.
 @provides
   [main] .
   [nomain] Core.lua
@@ -111,6 +111,15 @@ local bitmap, font, gdi_font, gdi_font_mute
 local box_x, box_y = 0, 0
 local host_w, host_h = 0, 0
 local hover = 0
+local TOOLTIP_DELAY = 0.45
+local tooltip_hover = 0
+local tooltip_since = 0
+local tooltip_shown = 0
+local tooltip_text = {
+    [1] = "Toggle armed tracks",
+    [2] = "Toggle muted tracks",
+    [3] = "Toggle solo tracks",
+}
 local pressed = 0
 local dragging = false
 local drag_dx, drag_dy = 0, 0
@@ -599,12 +608,12 @@ end
 local function show_context_menu()
     local menu =
         "#Global Rec Mute Solo|" ..
-        "Taille 100%|" ..
-        "Taille 125%|" ..
-        "Taille 150%|" ..
-        "Taille 200%|" ..
-        "||Réinitialiser l'emplacement|" ..
-        "Quitter"
+        "Size 100%|" ..
+        "Size 125%|" ..
+        "Size 150%|" ..
+        "Size 200%|" ..
+        "||Reset settings l'emplacement|" ..
+        "Quit"
 
     -- Mark the current size.
     local current_index =
@@ -615,12 +624,12 @@ local function show_context_menu()
         scale_percent == 175 and 5 or 6
 
     local entries = {
-        "Taille 75%",
-        "Taille 100% (Main Toolbar)",
-        "Taille 125%",
-        "Taille 150%",
-        "Taille 175%",
-        "Taille 200%"
+        "Size 75%",
+        "Size 100% (Main Toolbar)",
+        "Size 125%",
+        "Size 150%",
+        "Size 175%",
+        "Size 200%"
     }
 
     entries[current_index] = "!" .. entries[current_index]
@@ -628,8 +637,8 @@ local function show_context_menu()
     menu =
         "#Global Rec Mute Solo|" ..
         table.concat(entries, "|") ..
-        "||Réinitialiser l'emplacement|" ..
-        "Quitter"
+        "||Reset settings l'emplacement|" ..
+        "Quit"
 
     local title = "GRMS_Menu_" .. reaper.genGuid()
 
@@ -679,6 +688,39 @@ local function show_context_menu()
     end
 end
 
+local function hide_tooltip()
+    if tooltip_shown ~= 0 then
+        reaper.TrackCtl_SetToolTip("", 0, 0, false)
+        tooltip_shown = 0
+    end
+end
+
+local function update_tooltip(sx, sy, hit)
+    if dragging or drag_armed or suppress_left_until_release or hit == 0 then
+        tooltip_hover = 0
+        tooltip_since = 0
+        hide_tooltip()
+        return
+    end
+
+    if tooltip_hover ~= hit then
+        tooltip_hover = hit
+        tooltip_since = reaper.time_precise()
+        hide_tooltip()
+        return
+    end
+
+    if tooltip_shown ~= hit
+        and reaper.time_precise() - tooltip_since >= TOOLTIP_DELAY then
+        reaper.TrackCtl_SetToolTip(
+            tooltip_text[hit] or "",
+            sx + 14, sy + 20,
+            true
+        )
+        tooltip_shown = hit
+    end
+end
+
 local function update_mouse()
     local sx, sy = reaper.GetMousePosition()
     local cx, cy = reaper.JS_Window_ScreenToClient(host_hwnd, sx, sy)
@@ -694,6 +736,8 @@ local function update_mouse()
     local mouse_state = reaper.JS_Mouse_GetState(1 | 4)
     local down = (mouse_state & 1) == 1
     local ctrl_down = (mouse_state & 4) == 4
+
+    update_tooltip(sx, sy, hit)
 
     -- Ctrl + left click opens the configuration menu.
     -- Suppress the entire left-click gesture so it cannot toggle or drag.
@@ -763,6 +807,7 @@ local function update_mouse()
 
         if held >= DRAG_HOLD or moved >= DRAG_MOVE then
             dragging = true
+            hide_tooltip()
             drag_armed = false
             pressed = 0
             redraw = true
@@ -902,6 +947,7 @@ local function main()
 end
 
 local function cleanup()
+    hide_tooltip()
     stop_intercepts()
     destroy_bitmap()
     if floating_hwnd then gfx.quit() end

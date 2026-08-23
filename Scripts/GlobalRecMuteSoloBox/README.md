@@ -1,58 +1,20 @@
 # Global Rec Mute Solo Box
 
-Global Rec/Mute/Solo controls for REAPER.
+Compact global Rec / Mute / Solo controls for REAPER.
 
-Main action:
-- `Global_Rec_Mute_Solo.lua`
+## Features
+- Global Rec, Mute and Solo track-state controls.
+- Main Toolbar default placement.
+- Drag and drop to compatible REAPER UI areas.
+- Ctrl + left click configuration menu.
+- Sizes: 75%, 100%, 125%, 150%, 175%, 200% (100% = 28 × 28 px).
+- Persistent size and placement.
+- Optional automatic launch at REAPER startup.
+- Delayed hover tooltips:
+  - Rec — `Toggle armed tracks`
+  - Mute — `Toggle muted tracks`
+  - Solo — `Toggle solo tracks`
+- Tooltips are hidden while dragging.
 
-Included helper action:
-- `Global_Rec_Mute_Solo_Reset_Settings.lua`
-
-Internal helper:
-- `Core.lua`
-
-Requires:
-- ReaPack
-- js_ReaScriptAPI
-
-Author: **doomfred** (with OpenAI)
-
-
-## v1.1.0 — lancement automatique
-
-Deux actions sont ajoutées :
-
-- `Global Rec Mute Solo - Enable at REAPER startup`
-- `Global Rec Mute Solo - Disable at REAPER startup`
-
-L'activation ajoute un bloc balisé dans `Scripts/__startup.lua` sans effacer
-les éventuelles commandes de démarrage déjà présentes.
-
-Le lancement est retardé d'environ 1 seconde afin de laisser REAPER créer
-complètement la Main Toolbar et le Transport avant l'affichage du composant.
-
-Le composant reste ensuite actif indépendamment des changements de projet.
-
-
-## v1.1.1 — correction du démarrage ReaPack
-
-L'action d'activation ne suppose plus que le package est installé dans
-`Scripts/GlobalRecMuteSoloBox`.
-
-Elle récupère son emplacement réel via `reaper.get_action_context()`, en
-déduit le chemin de `Global_Rec_Mute_Solo.lua`, vérifie que ce fichier existe,
-puis écrit ce chemin exact dans `Scripts/__startup.lua`.
-
-
-## v1.1.2 — correction des chemins imbriqués
-
-L'action `Enable at REAPER startup` recherche désormais le script principal
-dans plusieurs dispositions possibles, notamment :
-
-- même dossier que l'action Enable;
-- sous-dossier `Scripts/`;
-- sous-dossier `Scripts/GlobalRecMuteSoloBox/`;
-- mêmes variantes depuis le dossier parent.
-
-Cela couvre le layout observé :
-`.../Scripts/GlobalRecMuteSoloBox/Scripts/Global_Rec_Mute_Solo.lua`.
+## Author
+**doomfred**, with OpenAI.

@@ -2,13 +2,9 @@
 <index version="1" name="GlobalRecMuteSoloBox">
   <category name="Scripts">
     <reapack name="Global_Rec_Mute_Solo.lua" type="script" desc="Global Rec Mute Solo">
-      <metadata>
-        <link rel="website">https://github.com/Doomfred/GlobalRecMuteSoloBox</link>
-      </metadata>
-      <version name="1.1.2" author="doomfred, OpenAI" time="2026-08-23T15:12:41Z">
-        <changelog><![CDATA[
-Fix automatic startup path discovery for nested ReaPack repository layouts.
-        ]]></changelog>
+      <metadata><link rel="website">https://github.com/Doomfred/GlobalRecMuteSoloBox</link></metadata>
+      <version name="1.1.3" author="doomfred, OpenAI" time="2026-08-23T19:32:08Z">
+        <changelog><![CDATA[English user-facing text and delayed hover tooltips.]]></changelog>
         <source main="main">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo.lua</source>
         <source file="Core.lua">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Core.lua</source>
         <source main="main" file="Global_Rec_Mute_Solo_Reset_Settings.lua">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo_Reset_Settings.lua</source>

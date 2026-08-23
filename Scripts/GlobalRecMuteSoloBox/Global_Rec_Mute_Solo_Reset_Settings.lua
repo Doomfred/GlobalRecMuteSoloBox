@@ -2,7 +2,7 @@
 @description Global Rec Mute Solo - Reset Settings
 @author doomfred, OpenAI
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
-@version 1.0.0
+@version 1.1.3
 @noindex
 @about
   Clears the saved host window, position and button size for Global Rec Mute Solo.
