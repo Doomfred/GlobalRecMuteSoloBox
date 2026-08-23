@@ -2,13 +2,15 @@
 @description Global Rec Mute Solo
 @author doomfred, OpenAI
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
-@version 1.0.0
+@version 1.1.0
 @changelog
-  Initial public release.
+  Add optional automatic launch at REAPER startup.
 @provides
   [main] .
   [nomain] Core.lua
   [main] Global_Rec_Mute_Solo_Reset_Settings.lua
+  [main] Global_Rec_Mute_Solo_Enable_Startup.lua
+  [main] Global_Rec_Mute_Solo_Disable_Startup.lua
 @requires
   js_ReaScriptAPI
 @about

@@ -57,3 +57,14 @@ The `index.xml` in this archive uses ReaPack's normal XML syntax:
 `<link rel="website">URL</link>`.
 
 Replace any previous `index.xml` in the repository root with this corrected file.
+
+
+## v1.1.0 update
+
+Upload the two new startup helper scripts together with the updated
+`Global_Rec_Mute_Solo.lua` and `index.xml`.
+
+After synchronizing ReaPack, run:
+`Global Rec Mute Solo - Enable at REAPER startup`
+
+Restart REAPER once to test that the component appears automatically.

@@ -5,11 +5,16 @@
       <metadata>
         <link rel="website">https://github.com/Doomfred/GlobalRecMuteSoloBox</link>
       </metadata>
-      <version name="1.0.0" author="doomfred, OpenAI" time="2026-08-23T14:35:10Z">
-        <changelog><![CDATA[Initial public release.]]></changelog>
+      <version name="1.1.0" author="doomfred, OpenAI" time="2026-08-23T15:02:41Z">
+        <changelog><![CDATA[
+Add optional automatic launch at REAPER startup.
+The component can now stay permanently available independently of projects.
+        ]]></changelog>
         <source main="main">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo.lua</source>
         <source file="Core.lua">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Core.lua</source>
         <source main="main" file="Global_Rec_Mute_Solo_Reset_Settings.lua">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo_Reset_Settings.lua</source>
+        <source main="main" file="Global_Rec_Mute_Solo_Enable_Startup.lua">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo_Enable_Startup.lua</source>
+        <source main="main" file="Global_Rec_Mute_Solo_Disable_Startup.lua">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo_Disable_Startup.lua</source>
       </version>
     </reapack>
   </category>
