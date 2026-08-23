@@ -2,9 +2,9 @@
 @description Global Rec Mute Solo
 @author doomfred, OpenAI
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
-@version 1.1.3
+@version 1.1.4
 @changelog
-  English UI text and delayed hover tooltips.
+  Keep hover tooltips visible for as long as the pointer remains over a button.
 @provides
   [main] .
   [nomain] Core.lua
@@ -710,8 +710,10 @@ local function update_tooltip(sx, sy, hit)
         return
     end
 
-    if tooltip_shown ~= hit
-        and reaper.time_precise() - tooltip_since >= TOOLTIP_DELAY then
+    if reaper.time_precise() - tooltip_since >= TOOLTIP_DELAY then
+        -- TrackCtl_SetToolTip is transient in REAPER. Refresh it every defer
+        -- cycle while the pointer stays over the same button so it remains
+        -- visible instead of disappearing after a brief moment.
         reaper.TrackCtl_SetToolTip(
             tooltip_text[hit] or "",
             sx + 14, sy + 20,

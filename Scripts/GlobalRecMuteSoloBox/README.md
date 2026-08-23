@@ -18,3 +18,10 @@ Compact global Rec / Mute / Solo controls for REAPER.
 
 ## Author
 **doomfred**, with OpenAI.
+
+
+## v1.1.4
+
+Hover tooltips are now refreshed continuously after the delay while the
+pointer remains over Rec, Mute or Solo. They disappear only when the pointer
+leaves the button or a drag starts.
