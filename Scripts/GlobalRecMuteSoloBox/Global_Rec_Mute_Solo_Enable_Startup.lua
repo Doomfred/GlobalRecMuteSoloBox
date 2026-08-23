@@ -1,7 +1,7 @@
 --[[
 @description Global Rec Mute Solo - Enable at REAPER startup
 @author doomfred, OpenAI
-@version 1.1.0
+@version 1.1.1
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
 @noindex
 ]]
@@ -35,73 +35,79 @@ local function remove_existing_block(text)
     if not a then return text end
 
     local b = text:find(END_MARK, a, true)
-    if not b then
-        -- Broken/incomplete block: remove from marker to EOF.
-        return text:sub(1, a - 1)
-    end
+    if not b then return text:sub(1, a - 1) end
 
     b = b + #END_MARK
-
-    -- Also remove one following line break if present.
     local suffix = text:sub(b + 1)
     suffix = suffix:gsub("^\r?\n", "", 1)
-
     return text:sub(1, a - 1) .. suffix
 end
 
-local block = [[
--- BEGIN GlobalRecMuteSoloBox startup
-do
-  local started = reaper.time_precise()
-
-  local function launch_GlobalRecMuteSoloBox()
-    -- Give REAPER time to finish creating the Main Toolbar and Transport.
-    if reaper.time_precise() - started < 1.0 then
-      reaper.defer(launch_GlobalRecMuteSoloBox)
-      return
-    end
-
-    local script =
-      reaper.GetResourcePath() ..
-      "/Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo.lua"
-
-    local ok, err = pcall(dofile, script)
-    if not ok then
-      reaper.ShowConsoleMsg(
-        "GlobalRecMuteSoloBox startup error:\n" ..
-        tostring(err) .. "\n"
-      )
-    end
-  end
-
-  launch_GlobalRecMuteSoloBox()
+local function dirname(path)
+    return path:match("^(.*[\\/])") or ""
 end
--- END GlobalRecMuteSoloBox startup
-]]
+
+local function lua_quote(path)
+    -- %q safely escapes Windows backslashes and any special characters.
+    return string.format("%q", path)
+end
+
+-- IMPORTANT: derive the real installation directory from THIS action.
+local _, this_script = reaper.get_action_context()
+local install_dir = dirname(this_script)
+local main_script = install_dir .. "Global_Rec_Mute_Solo.lua"
+
+-- Validate before modifying __startup.lua.
+local test = io.open(main_script, "rb")
+if not test then
+    reaper.MB(
+        "Impossible de trouver le script principal :\n\n" ..
+        main_script ..
+        "\n\nRéinstalle ou synchronise le package ReaPack puis réessaie.",
+        NAME, 0
+    )
+    return
+end
+test:close()
+
+local block =
+    START_MARK .. "\n" ..
+    "do\n" ..
+    "  local started = reaper.time_precise()\n" ..
+    "  local script = " .. lua_quote(main_script) .. "\n\n" ..
+    "  local function launch_GlobalRecMuteSoloBox()\n" ..
+    "    if reaper.time_precise() - started < 1.0 then\n" ..
+    "      reaper.defer(launch_GlobalRecMuteSoloBox)\n" ..
+    "      return\n" ..
+    "    end\n\n" ..
+    "    local ok, err = pcall(dofile, script)\n" ..
+    "    if not ok then\n" ..
+    "      reaper.ShowConsoleMsg(\"GlobalRecMuteSoloBox startup error:\\n\" .. tostring(err) .. \"\\n\")\n" ..
+    "    end\n" ..
+    "  end\n\n" ..
+    "  launch_GlobalRecMuteSoloBox()\n" ..
+    "end\n" ..
+    END_MARK .. "\n"
 
 local path = startup_path()
 local existing = remove_existing_block(read_file(path))
 
--- Keep existing user startup code intact and append our marked block.
 if existing ~= "" and not existing:match("\n$") then
     existing = existing .. "\n"
 end
 
 local ok, err = write_file(path, existing .. block)
-
 if not ok then
     reaper.MB(
         "Impossible de modifier :\n" .. path .. "\n\n" .. tostring(err),
-        NAME,
-        0
+        NAME, 0
     )
     return
 end
 
 reaper.MB(
     "Démarrage automatique activé.\n\n" ..
-    "Global Rec Mute Solo sera lancé automatiquement au prochain démarrage de REAPER.\n" ..
-    "Le fichier __startup.lua existant a été conservé.",
-    NAME,
-    0
+    "Chemin détecté :\n" .. main_script .. "\n\n" ..
+    "Global Rec Mute Solo sera lancé au prochain démarrage de REAPER.",
+    NAME, 0
 )

@@ -2,9 +2,9 @@
 @description Global Rec Mute Solo
 @author doomfred, OpenAI
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
-@version 1.1.0
+@version 1.1.1
 @changelog
-  Add optional automatic launch at REAPER startup.
+  Fix startup path detection for ReaPack installations.
 @provides
   [main] .
   [nomain] Core.lua
