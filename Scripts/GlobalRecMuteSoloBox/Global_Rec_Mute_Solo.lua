@@ -2,9 +2,9 @@
 @description Global Rec Mute Solo
 @author doomfred, OpenAI
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
-@version 1.1.1
+@version 1.1.2
 @changelog
-  Fix startup path detection for ReaPack installations.
+  Fix startup path discovery for repositories installed with an extra Scripts subfolder.
 @provides
   [main] .
   [nomain] Core.lua

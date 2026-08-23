@@ -1,7 +1,7 @@
 --[[
 @description Global Rec Mute Solo - Enable at REAPER startup
 @author doomfred, OpenAI
-@version 1.1.1
+@version 1.1.2
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
 @noindex
 ]]
@@ -30,6 +30,13 @@ local function write_file(path, data)
     return true
 end
 
+local function file_exists(path)
+    local f = io.open(path, "rb")
+    if not f then return false end
+    f:close()
+    return true
+end
+
 local function remove_existing_block(text)
     local a = text:find(START_MARK, 1, true)
     if not a then return text end
@@ -47,28 +54,50 @@ local function dirname(path)
     return path:match("^(.*[\\/])") or ""
 end
 
+local function parent_dir(path)
+    local p = path:gsub("[\\/]+$", "")
+    return p:match("^(.*[\\/])") or ""
+end
+
 local function lua_quote(path)
-    -- %q safely escapes Windows backslashes and any special characters.
     return string.format("%q", path)
 end
 
--- IMPORTANT: derive the real installation directory from THIS action.
+-- Resolve the real main script path from several layouts.
 local _, this_script = reaper.get_action_context()
 local install_dir = dirname(this_script)
-local main_script = install_dir .. "Global_Rec_Mute_Solo.lua"
+local parent = parent_dir(install_dir)
 
--- Validate before modifying __startup.lua.
-local test = io.open(main_script, "rb")
-if not test then
+local candidates = {
+    install_dir .. "Global_Rec_Mute_Solo.lua",
+
+    -- Layout currently produced by this GitHub/ReaPack repository:
+    install_dir .. "Scripts/Global_Rec_Mute_Solo.lua",
+
+    -- Other possible nested layouts:
+    install_dir .. "Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo.lua",
+    parent .. "Global_Rec_Mute_Solo.lua",
+    parent .. "Scripts/Global_Rec_Mute_Solo.lua",
+    parent .. "Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo.lua",
+}
+
+local main_script = nil
+for _, candidate in ipairs(candidates) do
+    if file_exists(candidate) then
+        main_script = candidate
+        break
+    end
+end
+
+if not main_script then
     reaper.MB(
-        "Impossible de trouver le script principal :\n\n" ..
-        main_script ..
-        "\n\nRéinstalle ou synchronise le package ReaPack puis réessaie.",
+        "Impossible de trouver Global_Rec_Mute_Solo.lua.\n\n" ..
+        "Dossier de l'action Enable détecté :\n" .. install_dir .. "\n\n" ..
+        "Synchronise le package ReaPack puis réessaie.",
         NAME, 0
     )
     return
 end
-test:close()
 
 local block =
     START_MARK .. "\n" ..
@@ -107,7 +136,7 @@ end
 
 reaper.MB(
     "Démarrage automatique activé.\n\n" ..
-    "Chemin détecté :\n" .. main_script .. "\n\n" ..
+    "Script principal détecté :\n" .. main_script .. "\n\n" ..
     "Global Rec Mute Solo sera lancé au prochain démarrage de REAPER.",
     NAME, 0
 )

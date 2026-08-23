@@ -5,10 +5,9 @@
       <metadata>
         <link rel="website">https://github.com/Doomfred/GlobalRecMuteSoloBox</link>
       </metadata>
-      <version name="1.1.1" author="doomfred, OpenAI" time="2026-08-23T15:07:32Z">
+      <version name="1.1.2" author="doomfred, OpenAI" time="2026-08-23T15:12:41Z">
         <changelog><![CDATA[
-Fix automatic startup path detection for ReaPack installations.
-The Enable Startup action now records the package's actual installed path.
+Fix automatic startup path discovery for nested ReaPack repository layouts.
         ]]></changelog>
         <source main="main">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo.lua</source>
         <source file="Core.lua">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Core.lua</source>

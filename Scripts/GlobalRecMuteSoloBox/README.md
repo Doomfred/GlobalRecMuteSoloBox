@@ -42,3 +42,17 @@ L'action d'activation ne suppose plus que le package est installé dans
 Elle récupère son emplacement réel via `reaper.get_action_context()`, en
 déduit le chemin de `Global_Rec_Mute_Solo.lua`, vérifie que ce fichier existe,
 puis écrit ce chemin exact dans `Scripts/__startup.lua`.
+
+
+## v1.1.2 — correction des chemins imbriqués
+
+L'action `Enable at REAPER startup` recherche désormais le script principal
+dans plusieurs dispositions possibles, notamment :
+
+- même dossier que l'action Enable;
+- sous-dossier `Scripts/`;
+- sous-dossier `Scripts/GlobalRecMuteSoloBox/`;
+- mêmes variantes depuis le dossier parent.
+
+Cela couvre le layout observé :
+`.../Scripts/GlobalRecMuteSoloBox/Scripts/Global_Rec_Mute_Solo.lua`.
