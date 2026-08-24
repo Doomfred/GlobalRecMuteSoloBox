@@ -25,3 +25,12 @@ Compact global Rec / Mute / Solo controls for REAPER.
 Hover tooltips are now refreshed continuously after the delay while the
 pointer remains over Rec, Mute or Solo. They disappear only when the pointer
 leaves the button or a drag starts.
+
+
+## v1.1.5 — portable startup path
+
+The startup block no longer stores an absolute Windows path.
+
+Instead, `Scripts/__startup.lua` builds the path dynamically with
+`reaper.GetResourcePath()`, making startup configuration portable across
+different Windows user accounts and REAPER installations.

@@ -2,9 +2,9 @@
 @description Global Rec Mute Solo
 @author doomfred, OpenAI
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
-@version 1.1.4
+@version 1.1.5
 @changelog
-  Keep hover tooltips visible for as long as the pointer remains over a button.
+  Use a portable REAPER resource path in __startup.lua instead of an absolute Windows user path.
 @provides
   [main] .
   [nomain] Core.lua

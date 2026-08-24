@@ -3,9 +3,10 @@
   <category name="Scripts">
     <reapack name="Global_Rec_Mute_Solo.lua" type="script" desc="Global Rec Mute Solo">
       <metadata><link rel="website">https://github.com/Doomfred/GlobalRecMuteSoloBox</link></metadata>
-      <version name="1.1.4" author="doomfred, OpenAI" time="2026-08-23T19:35:24Z">
+      <version name="1.1.5" author="doomfred, OpenAI" time="2026-08-24T09:29:07Z">
         <changelog><![CDATA[
-Keep hover tooltips visible while the pointer remains over a button.
+Use a portable startup path based on reaper.GetResourcePath().
+No absolute user-specific Windows path is stored in __startup.lua.
         ]]></changelog>
         <source main="main">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Global_Rec_Mute_Solo.lua</source>
         <source file="Core.lua">https://raw.githubusercontent.com/Doomfred/GlobalRecMuteSoloBox/main/Scripts/GlobalRecMuteSoloBox/Core.lua</source>
