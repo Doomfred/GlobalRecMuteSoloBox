@@ -1,7 +1,7 @@
 --[[
 @description Global Rec Mute Solo - Enable at REAPER startup
 @author doomfred, OpenAI
-@version 1.1.5
+@version 1.1.6
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
 @noindex
 ]]

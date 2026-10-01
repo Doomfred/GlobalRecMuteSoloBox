@@ -2,9 +2,9 @@
 @description Global Rec Mute Solo
 @author doomfred, OpenAI
 @link https://github.com/Doomfred/GlobalRecMuteSoloBox
-@version 1.1.5
+@version 1.1.6
 @changelog
-  Use a portable REAPER resource path in __startup.lua instead of an absolute Windows user path.
+  Right-click now opens the same configuration menu as Ctrl + left click.
 @provides
   [main] .
   [nomain] Core.lua
@@ -22,7 +22,7 @@
   - starts in the Main Toolbar when no target is saved;
   - short left click toggles the corresponding global state;
   - long left click enables drag-and-drop to another REAPER UI area;
-  - Ctrl + left click opens the configuration menu;
+  - Ctrl + left click or right-click opens the configuration menu;
   - button sizes: 75%, 100%, 125%, 150%, 175%, 200%;
   - selected size and host position are remembered;
   - 100% button size = 28 x 28 px;
@@ -37,7 +37,7 @@ local EXT = "GLOBAL_REC_MUTE_SOLO_V5"
 if not reaper.JS_Composite or not reaper.JS_Window_FromPoint
     or not reaper.JS_WindowMessage_Intercept
     or not reaper.JS_LICE_CreateBitmap then
-    reaper.MB(NAME .. " nécessite js_ReaScriptAPI.", NAME, 0)
+    reaper.MB(NAME .. " requires js_ReaScriptAPI.", NAME, 0)
     return
 end
 
@@ -135,6 +135,8 @@ local DRAG_PREVIEW = 0.18
 local DRAG_MOVE = 5
 local drag_armed = false
 local suppress_left_until_release = false
+local last_right_down = false
+local suppress_right_until_release = false
 
 local function extget(k)
     local v = reaper.GetExtState(EXT, k)
@@ -474,6 +476,9 @@ local function stop_intercepts()
     if intercepting and valid(host_hwnd) then
         reaper.JS_WindowMessage_Release(host_hwnd, "WM_LBUTTONDOWN")
         reaper.JS_WindowMessage_Release(host_hwnd, "WM_LBUTTONUP")
+        reaper.JS_WindowMessage_Release(host_hwnd, "WM_RBUTTONDOWN")
+        reaper.JS_WindowMessage_Release(host_hwnd, "WM_RBUTTONUP")
+        reaper.JS_WindowMessage_Release(host_hwnd, "WM_CONTEXTMENU")
     end
     intercepting = false
 end
@@ -482,6 +487,11 @@ local function start_intercepts()
     if intercepting or not valid(host_hwnd) then return end
     reaper.JS_WindowMessage_Intercept(host_hwnd, "WM_LBUTTONDOWN", false)
     reaper.JS_WindowMessage_Intercept(host_hwnd, "WM_LBUTTONUP", false)
+    -- Consume native right-click messages on the host so REAPER's own
+    -- toolbar context menu does not appear over our composited buttons.
+    reaper.JS_WindowMessage_Intercept(host_hwnd, "WM_RBUTTONDOWN", false)
+    reaper.JS_WindowMessage_Intercept(host_hwnd, "WM_RBUTTONUP", false)
+    reaper.JS_WindowMessage_Intercept(host_hwnd, "WM_CONTEXTMENU", false)
     intercepting = true
 end
 
@@ -612,7 +622,7 @@ local function show_context_menu()
         "Size 125%|" ..
         "Size 150%|" ..
         "Size 200%|" ..
-        "||Reset settings l'emplacement|" ..
+        "||Reset placement|" ..
         "Quit"
 
     -- Mark the current size.
@@ -637,7 +647,7 @@ local function show_context_menu()
     menu =
         "#Global Rec Mute Solo|" ..
         table.concat(entries, "|") ..
-        "||Reset settings l'emplacement|" ..
+        "||Reset placement|" ..
         "Quit"
 
     local title = "GRMS_Menu_" .. reaper.genGuid()
@@ -696,7 +706,7 @@ local function hide_tooltip()
 end
 
 local function update_tooltip(sx, sy, hit)
-    if dragging or drag_armed or suppress_left_until_release or hit == 0 then
+    if dragging or drag_armed or suppress_left_until_release or suppress_right_until_release or hit == 0 then
         tooltip_hover = 0
         tooltip_since = 0
         hide_tooltip()
@@ -734,12 +744,37 @@ local function update_mouse()
     end
 
     -- JS_Mouse_GetState uses the same bitfield as gfx.mouse_cap:
-    -- bit 1 = left mouse, bit 4 = Ctrl on Windows.
-    local mouse_state = reaper.JS_Mouse_GetState(1 | 4)
+    -- bit 1 = left mouse, bit 2 = right mouse, bit 4 = Ctrl on Windows.
+    local mouse_state = reaper.JS_Mouse_GetState(1 | 2 | 4)
     local down = (mouse_state & 1) == 1
+    local right_down = (mouse_state & 2) == 2
     local ctrl_down = (mouse_state & 4) == 4
 
     update_tooltip(sx, sy, hit)
+
+    -- Right-click on any button opens the same configuration menu as
+    -- Ctrl + left click. Right-click never toggles a track state or starts a drag.
+    if right_down and not last_right_down and hit > 0 then
+        suppress_right_until_release = true
+        hide_tooltip()
+        down_button = 0
+        pressed = 0
+        drag_armed = false
+        dragging = false
+        redraw = true
+        show_context_menu()
+    end
+
+    if suppress_right_until_release then
+        if not right_down then
+            suppress_right_until_release = false
+        end
+        last_right_down = right_down
+        last_down = down
+        return
+    end
+
+    last_right_down = right_down
 
     -- Ctrl + left click opens the configuration menu.
     -- Suppress the entire left-click gesture so it cannot toggle or drag.

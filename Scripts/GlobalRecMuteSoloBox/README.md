@@ -34,3 +34,11 @@ The startup block no longer stores an absolute Windows path.
 Instead, `Scripts/__startup.lua` builds the path dynamically with
 `reaper.GetResourcePath()`, making startup configuration portable across
 different Windows user accounts and REAPER installations.
+
+
+## v1.1.6 — right-click configuration
+
+Right-clicking Rec, Mute or Solo now opens the same configuration menu as
+Ctrl + left click. Native REAPER right-click/context-menu messages are
+intercepted while the component is active so the underlying toolbar menu
+does not replace the Global Rec Mute Solo menu.
